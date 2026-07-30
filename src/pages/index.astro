@@ -1,0 +1,115 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { existsSync } from 'node:fs';
+
+const base = import.meta.env.BASE_URL;
+const asset = (path: string) => `${base}${path}`;
+const releaseVideos = {
+  short: existsSync('public/videos/release-short.mp4'),
+  long: existsSync('public/videos/release-long.mp4')
+};
+const songs = [
+  ['Twinkle Twinkle', 'twinkle-twinkle.mp4'],
+  ['School Song', 'school-song.mp4'],
+  ['Looking for Friends', 'looking-for-friends.mp4'],
+  ['Kindergarten', 'kindergarten.mp4'],
+  ['Drop a Handkerchief', 'drop-a-handkerchief.mp4']
+];
+const bibtex = `@misc{yang2026strike,
+  title        = {Strike and Release: Proximity-Guided Transient-Contact Control for Robotic Percussion},
+  author       = {Hongyi Yang and Chenxi Xiao},
+  year         = {2026},
+  note         = {Submitted to the IEEE International Conference on Robotics and Biomimetics (ROBIO)}
+}`;
+---
+<BaseLayout>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="site-nav">
+    <nav class="nav-inner" aria-label="Main navigation">
+      <a class="brand" href="#top">Strike &amp; Release</a>
+      <div class="nav-links">
+        <a href="#motivation">Motivation</a><a href="#method">Method</a><a href="#experiments">Setup</a><a href="#results">Results</a><a href="#demos">Demos</a><a href="#paper">Paper</a>
+      </div>
+    </nav>
+  </header>
+  <main id="main">
+    <section class="section hero" id="top"><div class="wrap">
+      <p class="eyebrow">Academic robotics project · ROBIO 2026 submission</p>
+      <h1>Strike and Release: Proximity-Guided Transient-Contact Control for Robotic Percussion</h1>
+      <p class="authors">Hongyi Yang and Chenxi Xiao</p>
+      <p class="affiliation">School of Information Science and Technology, ShanghaiTech University</p>
+      <p class="lede">Pre-contact proximity sensing enables a general-purpose robot to reverse its striking motion before sustained contact develops, producing rapid mallet release and clear, repeatable percussion.</p>
+      <div class="actions"><a class="button" href={asset('paper.pdf')} target="_blank" rel="noopener">Paper</a><a class="button secondary" href="#demos">Demos</a><a class="button secondary" href="#method">Method</a><a class="button secondary" href="#citation">BibTeX</a></div>
+      <figure class="figure-frame"><img src={asset('images/teaser.svg')} alt="Overview comparing position-triggered and proximity-triggered robotic percussion, from approach through impact and release" /></figure>
+      <div class="metrics" aria-label="Headline results"><div class="metric"><strong>1,580</strong><span>commanded strikes</span></div><div class="metric"><strong>5</strong><span>multi-note sequences</span></div><div class="metric"><strong>97.34%</strong><span>strike success rate</span></div><div class="metric"><strong>+23.16 p.p.</strong><span>absolute improvement</span></div></div>
+    </div></section>
+
+    <section class="section" id="motivation"><div class="wrap">
+      <p class="eyebrow">Motivation</p><h2>A clear strike also needs a timely release.</h2>
+      <p class="intro">Earlier command reversal promotes rapid mallet separation and sustained vibration, whereas delayed reversal can prolong mallet–surface contact and damp the acoustic response.</p>
+      <div class="two-col">
+        <article class="card"><h3>Earlier reversal</h3><div class="media-box">{releaseVideos.short ? <video controls muted loop playsinline preload="metadata" poster={asset('images/release-short-poster.png')}><source src={asset('videos/release-short.mp4')} type="video/mp4" />Your browser does not support MP4 video.</video> : <img src={asset('images/release-short-poster.png')} alt="High-speed recording still showing the shorter-contact strike" />}</div>{!releaseVideos.short && <p class="fallback-note">High-speed MP4 pending conversion; poster frame shown.</p>}<img class="waveform" src={asset('images/waveform_short.svg')} alt="Acoustic waveform for earlier reversal showing sustained vibration" /><div class="tags"><span class="tag">Shorter contact</span><span class="tag">Rapid release</span><span class="tag">Sustained vibration</span><span class="tag">≈ 50 ms contact</span></div></article>
+        <article class="card"><h3>Later reversal</h3><div class="media-box">{releaseVideos.long ? <video controls muted loop playsinline preload="metadata" poster={asset('images/release-long-poster.png')}><source src={asset('videos/release-long.mp4')} type="video/mp4" />Your browser does not support MP4 video.</video> : <img src={asset('images/release-long-poster.png')} alt="High-speed recording still showing the longer-contact strike" />}</div>{!releaseVideos.long && <p class="fallback-note">High-speed MP4 pending conversion; poster frame shown.</p>}<img class="waveform" src={asset('images/waveform_long.svg')} alt="Acoustic waveform for later reversal showing rapid decay" /><div class="tags"><span class="tag">Longer contact</span><span class="tag">Delayed release</span><span class="tag">Rapid acoustic decay</span><span class="tag">≈ 95.2 ms contact</span></div></article>
+      </div><p class="qualifier">The contact intervals are representative qualitative examples, not population-level statistical estimates.</p>
+    </div></section>
+
+    <section class="section" id="method"><div class="wrap">
+      <p class="eyebrow">Method</p><h2>Proximity-guided transient-contact control</h2>
+      <p class="intro">A wrist-mounted time-of-flight sensor observes the instrument surface. Retraction begins before prolonged contact develops, while compliant execution accommodates residual impact uncertainty.</p>
+      <figure class="figure-frame"><img src={asset('images/method-overview.svg')} alt="Method diagram showing sensing, state transitions, control, and the transient-contact strike cycle" /></figure>
+      <ol class="steps"><li>Ready configuration</li><li>Distal-joint approach</li><li>Pre-contact event</li><li>Command reversal</li><li>Impact and rapid release</li></ol>
+      <div class="three-col">
+        <article class="method-card"><h3>Two-stage proximity triggering</h3><ul><li>Wrist-mounted VL53L5CX time-of-flight sensor</li><li>4 × 4 distance measurements at 60 Hz</li><li>ESP32-C3 edge-side median filtering and coarse distance gate</li><li>Note-specific fine threshold on the host computer</li><li>Events accepted only during <code>APPROACH</code></li></ul></article>
+        <article class="method-card"><h3>Compliant execution</h3><ul><li>1-kHz joint-space impedance controller with model-based feedforward compensation</li><li>Proximal joints regulated near the ready configuration</li><li>Distal joint generates the strike</li><li>Reversal before sustained contact; residual momentum completes impact</li></ul></article>
+        <article class="method-card"><h3>Smooth inter-strike motion</h3><ul><li>Minimum-jerk interpolation only between successive ready configurations</li><li>Task-defined distal-joint velocities retained for approach and retraction</li><li>Zero terminal velocity and acceleration establish a repeatable next-strike initial condition</li></ul><p><a href={asset('paper.pdf')} target="_blank" rel="noopener">See the paper for the formal definition.</a></p></article>
+      </div>
+    </div></section>
+
+    <section class="section" id="experiments"><div class="wrap">
+      <p class="eyebrow">Hardware and protocol</p><h2>Experimental setup</h2>
+      <div class="photos"><figure class="photo"><img src={asset('images/robot-platform.jpg')} alt="Franka Research 3 robot positioned over a steel tongue drum" /><figcaption>Franka Research 3 percussion platform with a 40-cm steel tongue drum and customized mallet.</figcaption></figure><figure class="photo"><img src={asset('images/sensor-mallet-assembly.png')} alt="Close view of the wrist-mounted proximity sensor and customized mallet assembly" /><figcaption>Wrist-mounted VL53L5CX proximity sensor and mallet assembly.</figcaption></figure></div>
+      <ul class="facts"><li>Franka Research 3, 7 DoF</li><li>1-kHz torque control</li><li>VL53L5CX, 4 × 4 at 60 Hz</li><li>ESP32-C3 edge processing</li><li>Five songs × five repetitions × two triggering conditions</li><li>790 commanded strikes per condition</li></ul>
+    </div></section>
+
+    <section class="section" id="results"><div class="wrap">
+      <p class="eyebrow">Quantitative results</p><h2>Proximity triggering improves strike reliability</h2>
+      <div class="results-grid"><div class="result-card"><strong>74.18% → 97.34%</strong><span>Strike success rate</span></div><div class="result-card"><strong>+23.16 p.p.</strong><span>Absolute SR improvement</span></div><div class="result-card"><strong>76.30% → 98.72%</strong><span>Valid strike success rate</span></div><div class="result-card"><strong>73.76 ± 7.65% → 97.34 ± 2.85%</strong><span>Mean per-run SR</span></div><div class="result-card"><strong>0.1553 → 0.0049 rad/s</strong><span>Minimum-jerk terminal velocity RMS median</span></div><div class="result-card"><strong>96.41%</strong><span>Median segment-wise reduction</span></div></div>
+      <div class="table-wrap"><table><caption class="skip">Strike success rates by sequence and trigger condition</caption><thead><tr><th scope="col">Sequence</th><th scope="col">Position trigger SR</th><th scope="col">Proximity trigger SR</th><th scope="col">Improvement</th></tr></thead><tbody><tr><td>Twinkle Twinkle</td><td>78.10%</td><td>96.67%</td><td>+18.57 p.p.</td></tr><tr><td>School Song</td><td>72.00%</td><td>96.80%</td><td>+24.80 p.p.</td></tr><tr><td>Looking for Friends</td><td>68.57%</td><td>97.86%</td><td>+29.29 p.p.</td></tr><tr><td>Kindergarten</td><td>75.65%</td><td>97.39%</td><td>+21.74 p.p.</td></tr><tr><td>Drop a Handkerchief</td><td>74.50%</td><td>98.00%</td><td>+23.50 p.p.</td></tr><tr><td>Aggregate</td><td>74.18%</td><td>97.34%</td><td>+23.16 p.p.</td></tr></tbody></table></div>
+    </div></section>
+
+    <section class="section" id="demos"><div class="wrap">
+      <p class="eyebrow">Video demonstrations</p><h2>Five multi-note percussion demos</h2><p class="intro">Select a sequence to load it in the player. Playback begins only when you press play.</p>
+      <div class="demo-player"><video id="featured-video" controls playsinline preload="metadata"><source id="featured-source" src={asset(`videos/${songs[0][1]}`)} type="video/mp4" />Your browser does not support MP4 video.</video><p id="video-status" class="video-status" aria-live="polite">Selected: Twinkle Twinkle</p></div>
+      <div class="song-picker" role="group" aria-label="Choose a percussion demo">{songs.map(([title,file],i)=><button class="song" type="button" data-file={file} data-title={title} aria-pressed={i===0 ? 'true':'false'}>{title}</button>)}</div>
+    </div></section>
+
+    <section class="section" id="discussion"><div class="wrap">
+      <p class="eyebrow">Discussion</p><h2>Contact-aware control, with a defined scope</h2>
+      <div class="discussion"><p>Reliable percussion requires both impact and timely separation. In the tested setup, surface-relative triggering is more direct than a fixed joint-angle threshold, which can be sensitive to geometry, calibration, and tracking variation. Joint-space impedance control accommodates residual impact uncertainty, while minimum-jerk planning reduces residual motion before the following strike.</p><p>The current method relies on manually calibrated, note-specific thresholds, and the experiments focus on short structured sequences on the reported platform. Expressive intensity control, long-horizon timing, online parameter adaptation, and transfer to additional instruments remain future work.</p></div>
+    </div></section>
+
+    <section class="section" id="paper"><div class="wrap">
+      <p class="eyebrow">Paper and citation</p><h2>Read and cite the work</h2><p><a class="button" href={asset('paper.pdf')} target="_blank" rel="noopener">Open paper (PDF)</a></p>
+      <div id="citation"><h3>Provisional citation</h3><p>This metadata should be updated after publication.</p><pre class="citation" id="bibtex">{bibtex}</pre><div class="copy-row"><button class="button secondary" id="copy-bibtex" type="button">Copy BibTeX</button><span class="copy-status" id="copy-status" aria-live="polite"></span></div></div>
+    </div></section>
+  </main>
+  <footer><div class="wrap footer-inner"><span><strong>Strike and Release</strong> · ShanghaiTech University · 2026</span><span>Local media only · No analytics or cookies</span></div></footer>
+  <script define:vars={{ base }}>
+    const player = document.querySelector('#featured-video');
+    const source = document.querySelector('#featured-source');
+    const status = document.querySelector('#video-status');
+    document.querySelectorAll('.song').forEach((button) => button.addEventListener('click', () => {
+      if (!(player instanceof HTMLVideoElement) || !(source instanceof HTMLSourceElement) || !(button instanceof HTMLButtonElement)) return;
+      player.pause(); source.src = `${base}videos/${button.dataset.file}`; player.load();
+      document.querySelectorAll('.song').forEach((item) => item.setAttribute('aria-pressed', String(item === button)));
+      if (status) status.textContent = `Selected: ${button.dataset.title}`;
+    }));
+    player?.addEventListener('error', () => { if (status) status.textContent = 'This video could not be loaded. Please choose another demo or download the project assets.'; }, true);
+    document.querySelector('#copy-bibtex')?.addEventListener('click', async () => {
+      const text = document.querySelector('#bibtex')?.textContent || '';
+      const copyStatus = document.querySelector('#copy-status');
+      try { await navigator.clipboard.writeText(text); if (copyStatus) copyStatus.textContent = 'Copied to clipboard.'; }
+      catch { if (copyStatus) copyStatus.textContent = 'Copy failed. Select the citation text manually.'; }
+    });
+  </script>
+</BaseLayout>
