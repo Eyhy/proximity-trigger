@@ -28,7 +28,7 @@ const bibtex = `@misc{yang2026strike,
     <nav class="nav-inner" aria-label="Main navigation">
       <a class="brand" href="#top">Strike &amp; Release</a>
       <div class="nav-links">
-        <a href="#motivation">Motivation</a><a href="#method">Method</a><a href="#experiments">Setup</a><a href="#results">Results</a><a href="#demos">Demos</a><a href="#paper">Paper</a>
+        <a href="#motivation">Motivation</a><a href="#method">Method</a><a href="#experiments">Setup</a><a href="#results">Results</a><a href="#demos">Demos</a><a href="#paper">Citation</a>
       </div>
     </nav>
   </header>
@@ -39,7 +39,7 @@ const bibtex = `@misc{yang2026strike,
       <p class="authors">Hongyi Yang and Chenxi Xiao</p>
       <p class="affiliation">School of Information Science and Technology, ShanghaiTech University</p>
       <p class="lede">Pre-contact proximity sensing enables a general-purpose robot to reverse its striking motion before sustained contact develops, producing rapid mallet release and clear, repeatable percussion.</p>
-      <div class="actions"><a class="button" href={asset('paper.pdf')} target="_blank" rel="noopener">Paper</a><a class="button secondary" href="#demos">Demos</a><a class="button secondary" href="#method">Method</a><a class="button secondary" href="#citation">BibTeX</a></div>
+      <div class="actions"><a class="button secondary" href="#demos">Demos</a><a class="button secondary" href="#method">Method</a><a class="button secondary" href="#citation">BibTeX</a></div>
       <figure class="figure-frame"><img src={asset('images/teaser.svg')} alt="Overview comparing position-triggered and proximity-triggered robotic percussion, from approach through impact and release" /></figure>
       <div class="metrics" aria-label="Headline results"><div class="metric"><strong>1,580</strong><span>commanded strikes</span></div><div class="metric"><strong>5</strong><span>multi-note sequences</span></div><div class="metric"><strong>97.34%</strong><span>strike success rate</span></div><div class="metric"><strong>+23.16 p.p.</strong><span>absolute improvement</span></div></div>
     </div></section>
@@ -61,7 +61,7 @@ const bibtex = `@misc{yang2026strike,
       <div class="three-col">
         <article class="method-card"><h3>Two-stage proximity triggering</h3><ul><li>Wrist-mounted VL53L5CX time-of-flight sensor</li><li>4 × 4 distance measurements at 60 Hz</li><li>ESP32-C3 edge-side median filtering and coarse distance gate</li><li>Note-specific fine threshold on the host computer</li><li>Events accepted only during <code>APPROACH</code></li></ul></article>
         <article class="method-card"><h3>Compliant execution</h3><ul><li>1-kHz joint-space impedance controller with model-based feedforward compensation</li><li>Proximal joints regulated near the ready configuration</li><li>Distal joint generates the strike</li><li>Reversal before sustained contact; residual momentum completes impact</li></ul></article>
-        <article class="method-card"><h3>Smooth inter-strike motion</h3><ul><li>Minimum-jerk interpolation only between successive ready configurations</li><li>Task-defined distal-joint velocities retained for approach and retraction</li><li>Zero terminal velocity and acceleration establish a repeatable next-strike initial condition</li></ul><p><a href={asset('paper.pdf')} target="_blank" rel="noopener">See the paper for the formal definition.</a></p></article>
+        <article class="method-card"><h3>Smooth inter-strike motion</h3><ul><li>Minimum-jerk interpolation only between successive ready configurations</li><li>Task-defined distal-joint velocities retained for approach and retraction</li><li>Zero terminal velocity and acceleration establish a repeatable next-strike initial condition</li></ul><p>The manuscript provides the formal definition.</p></article>
       </div>
     </div></section>
 
@@ -89,7 +89,7 @@ const bibtex = `@misc{yang2026strike,
     </div></section>
 
     <section class="section" id="paper"><div class="wrap">
-      <p class="eyebrow">Paper and citation</p><h2>Read and cite the work</h2><p><a class="button" href={asset('paper.pdf')} target="_blank" rel="noopener">Open paper (PDF)</a></p>
+      <p class="eyebrow">Citation</p><h2>Cite the work</h2>
       <div id="citation"><h3>Provisional citation</h3><p>This metadata should be updated after publication.</p><pre class="citation" id="bibtex">{bibtex}</pre><div class="copy-row"><button class="button secondary" id="copy-bibtex" type="button">Copy BibTeX</button><span class="copy-status" id="copy-status" aria-live="polite"></span></div></div>
     </div></section>
   </main>
