@@ -1,6 +1,6 @@
 # Strike and Release project website
 
-Static academic project page for **Strike and Release: Proximity-Guided Transient-Contact Control for Robotic Percussion** by Hongyi Yang and Chenxi Xiao, ShanghaiTech University.
+Static academic project page for **Strike and Release: Proximity-Guided Transient-Contact Control for Robotic Percussion** by Hongyi Yang and Chenxi Xiao, ShanghaiTech University. The default GitHub Pages URL is `https://eyhy.github.io/proximity-trigger/`.
 
 ## Prerequisites
 
@@ -35,14 +35,20 @@ On macOS, Linux, or Git Bash with FFmpeg installed:
 sh scripts/convert-release-videos.sh
 ```
 
+On Windows PowerShell with FFmpeg installed:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/convert-release-videos.ps1
+```
+
 The script first inspects both sources with `ffprobe`, then runs the equivalent of:
 
 ```sh
-ffmpeg -i webpage/videos/release-short.avi -c:v libx264 -preset medium -crf 18 -pix_fmt yuv420p -movflags +faststart -an public/videos/release-short.mp4
-ffmpeg -i webpage/videos/release-long.avi -c:v libx264 -preset medium -crf 18 -pix_fmt yuv420p -movflags +faststart -an public/videos/release-long.mp4
+ffmpeg -i webpage/videos/release-short.avi -t 5 -vf "setpts=2.0*PTS" -c:v libx264 -preset medium -crf 18 -pix_fmt yuv420p -movflags +faststart -an public/videos/release-short.mp4
+ffmpeg -i webpage/videos/release-long.avi -t 5 -vf "setpts=2.0*PTS" -c:v libx264 -preset medium -crf 18 -pix_fmt yuv420p -movflags +faststart -an public/videos/release-long.mp4
 ```
 
-Source timing and frame rate are preserved. Run `npm run build` again after conversion; Astro will then include the MP4 players. The generated HTML never points to AVI media.
+Only the first five seconds of each source are retained because the strike occurs in that interval. The selected segment is played at half speed (`setpts=2.0*PTS`), producing an output of approximately ten seconds without inventing intermediate frames. Run `npm run build` again after conversion; Astro will then include the MP4 players. The generated HTML never points to AVI media.
 
 ## Asset layout
 

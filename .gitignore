@@ -3,5 +3,7 @@ dist/
 .astro/
 .npm-cache/
 .DS_Store
+.reference-contact/
 
-webpage/videos/*
+webpage/videos/release-short.avi
+webpage/videos/release-long.avi
