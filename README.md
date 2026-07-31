@@ -54,14 +54,13 @@ Only the first five seconds of each source are retained because the strike occur
 
 ```text
 public/
-  paper.pdf
   favicon.svg
   images/       # teaser, method figure, waveforms, posters, and setup photos
   videos/       # five demonstrations and optional converted release MP4s
 webpage/        # original supplied source assets, including the AVIs
 ```
 
-To update the paper, replace `public/paper.pdf`. Replace figures or videos with the same case-sensitive filenames, or update their paths in `src/pages/index.astro`. Keep the five demonstration filenames unchanged unless every reference is updated. To refresh a release video, replace its AVI in `webpage/videos/`, remove the old generated MP4, and rerun the conversion script.
+Replace figures or videos with the same case-sensitive filenames, or update their paths in `src/pages/index.astro`. Keep the five demonstration filenames unchanged unless every reference is updated. To refresh a release video, replace its AVI in `webpage/videos/`, remove the old generated MP4, and rerun the conversion script.
 
 The BibTeX in `src/pages/index.astro` is explicitly provisional. After publication, replace it with authoritative venue metadata; do not add a DOI until one exists.
 
